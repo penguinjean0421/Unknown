@@ -1,63 +1,38 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-
-    [Header("Move")]
     Rigidbody rigid;
     public float speed = 2f;
-    public float maxSpeed = 5f;
-
-    [Header("Weapon")]
-    Vector3 leftMuzzle, rightMuzzle;
-    public GameObject bullet;
-    public float bulletSpeed = 100f;
-    bool isShooting;
+    Weapon weapon;
 
     public
     void Awake()
     {
         rigid = GetComponent<Rigidbody>();
+        weapon = GameObject.Find("Weapon").GetComponent<Weapon>();
     }
-
-    void Start()
-    {
-        leftMuzzle = GameObject.Find("LeftMuzzle").transform.position;
-        rightMuzzle = GameObject.Find("RighttMuzzle").transform.position;
-    }
-
     void Update()
     {
-        if (Keyboard.current == null) { return; }
+        Move();
 
-        if (Keyboard.current.spaceKey.isPressed) { isShooting = true; }
-
-        if (Keyboard.current.wKey.isPressed) { rigid.AddForce(0, 0, speed, ForceMode.Force); }
-        if (rigid.linearVelocity.z >= maxSpeed) { rigid.linearVelocity = new Vector3(rigid.linearVelocity.x, rigid.linearVelocity.y, maxSpeed); }
-
-        if (Keyboard.current.sKey.isPressed) { rigid.AddForce(0, 0, -speed, ForceMode.Force); }
-        if (rigid.linearVelocity.z <= -maxSpeed) { rigid.linearVelocity = new Vector3(rigid.linearVelocity.x, rigid.linearVelocity.y, -maxSpeed); }
-
-        if (Keyboard.current.aKey.isPressed) { rigid.AddForce(-speed, 0, 0, ForceMode.Force); }
-        if (rigid.linearVelocity.x <= -maxSpeed) { rigid.linearVelocity = new Vector3(-maxSpeed, rigid.linearVelocity.y, rigid.linearVelocity.z); }
-
-        if (Keyboard.current.dKey.isPressed) { rigid.AddForce(speed, 0, 0, ForceMode.Force); }
-        if (rigid.linearVelocity.x >= maxSpeed) { rigid.linearVelocity = new Vector3(maxSpeed, rigid.linearVelocity.y, rigid.linearVelocity.z); }
-
-        Debug.Log($"Velocity : {rigid.linearVelocity}");
-
-        if (isShooting)
-        {
-            GameObject rightBullet = Instantiate(bullet, rightMuzzle, this.transform.rotation);
-            Rigidbody rightBulletRb = rightBullet.GetComponent<Rigidbody>();
-            rightBulletRb.linearVelocity = this.transform.forward * bulletSpeed;
-
-            GameObject leftBullet = Instantiate(bullet, leftMuzzle, this.transform.rotation);
-            Rigidbody leftBulletRb = leftBullet.GetComponent<Rigidbody>();
-            leftBulletRb.linearVelocity = this.transform.forward * bulletSpeed;
-        }
-        isShooting = false;
+        if (Keyboard.current.spaceKey.isPressed) { weapon.isShooting = true; }
     }
+
+    void Move()
+    {
+        float vInput = 0;
+        float hInput = 0;
+
+        if (Keyboard.current.wKey.isPressed) hInput += 1f;
+        if (Keyboard.current.sKey.isPressed) hInput -= 1f;
+
+        if (Keyboard.current.aKey.isPressed) vInput -= 1f;
+        if (Keyboard.current.dKey.isPressed) vInput += 1f;
+
+        Vector3 movement = new Vector3(vInput, 0f, hInput).normalized;
+        transform.position += movement * speed * Time.deltaTime;
+    }
+
 }

@@ -4,6 +4,6 @@ public class Bullet : MonoBehaviour
 {
     void Start()
     {
-        Destroy(this.gameObject, 2f);
+        Destroy(this.gameObject, 0.5f);
     }
 }
