@@ -4,17 +4,29 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     Rigidbody rigid;
-    public float speed = 2f;
     Weapon weapon;
 
-    public
+    public float speed = 2f;
+
+    public int maxHp = 100;
+    int hp;
+    int damage;
+
     void Awake()
     {
         rigid = GetComponent<Rigidbody>();
         weapon = GameObject.Find("Weapon").GetComponent<Weapon>();
     }
+
+    void Start()
+    {
+        hp = maxHp;
+    }
+
     void Update()
     {
+        if (hp <= 0) { Debug.Log("Die"); }
+
         Move();
 
         if (Keyboard.current.spaceKey.isPressed) { weapon.isShooting = true; }
@@ -35,4 +47,13 @@ public class Player : MonoBehaviour
         transform.position += movement * speed * Time.deltaTime;
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.name == "Bullet(Clone)")
+        {
+            damage = Random.Range(1, 3);
+            hp -= damage;
+            Debug.Log($"Player Attack. now hp : {hp}");
+        }
+    }
 }
