@@ -40,8 +40,8 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         hp = maxHp;
-        // InitializePatroalRoute();
-        // MoveToNextPatrolLocation();
+        InitializePatroalRoute();
+        MoveToNextPatrolLocation();
         StartCoroutine(Shoot());
     }
 
@@ -53,9 +53,9 @@ public class Enemy : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        Move();
+        // Move();
 
-        // if (agent.remainingDistance < 0.2f && !agent.pathPending) { MoveToNextPatrolLocation(); }
+        if (agent.remainingDistance < 0.2f && !agent.pathPending) { MoveToNextPatrolLocation(); }
     }
 
     void Move()
