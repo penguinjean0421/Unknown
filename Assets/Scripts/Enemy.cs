@@ -2,10 +2,14 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
     Rigidbody rigid;
+
+    Slider hpSlider;
+    Text nameText;
 
     float speed = 1f;
 
@@ -17,7 +21,7 @@ public class Enemy : MonoBehaviour
     int locationIndex = 0;
 
     [Header("HP")]
-    public int maxHp = 10;
+    public int maxHp;
     int hp;
     int damage;
 
@@ -30,6 +34,8 @@ public class Enemy : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
+        hpSlider = GetComponentInChildren<Slider>();
+        nameText = GetComponentInChildren<Text>();
 
         player = GameObject.Find("Player").transform;
         patrolRoute = GameObject.Find("PatrolRoute").transform;
@@ -40,6 +46,10 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         hp = maxHp;
+        nameText.text = "Enemy Name";
+
+        Debug.Log($"Enemy Hp : {hp}");
+
         InitializePatroalRoute();
         MoveToNextPatrolLocation();
         StartCoroutine(Shoot());
@@ -53,9 +63,11 @@ public class Enemy : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        // Move();
+        hpSlider.value = (float)hp / (float)maxHp;
 
         if (agent.remainingDistance < 0.2f && !agent.pathPending) { MoveToNextPatrolLocation(); }
+
+        // Move();
     }
 
     void Move()
