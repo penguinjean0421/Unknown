@@ -130,6 +130,8 @@ public class Enemy : MonoBehaviour
 
             Debug.Log($"Enemy Attack. current Hp : {hp}");
             Debug.Log($"score +={damage}");
+
+            GameManager.Instance.GetScore(hp, damage);
         }
     }
 
