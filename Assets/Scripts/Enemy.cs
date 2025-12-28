@@ -46,6 +46,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         hp = maxHp;
+        hpSlider.value = (float)hp / maxHp;
         nameText.text = "Enemy Name";
 
         Debug.Log($"Enemy Hp : {hp}");
@@ -60,10 +61,8 @@ public class Enemy : MonoBehaviour
         if (hp <= 0)
         {
             Debug.Log($"Enemy die");
-            Destroy(this.gameObject);
+            Die();
         }
-
-        hpSlider.value = (float)hp / (float)maxHp;
 
         if (agent.remainingDistance < 0.2f && !agent.pathPending) { MoveToNextPatrolLocation(); }
 
@@ -80,6 +79,12 @@ public class Enemy : MonoBehaviour
 
         if (transform.position.x >= 5) { speed *= -1; }
         if (transform.position.x <= -5) { speed *= -1; }
+    }
+
+    void Die()
+    {
+        GameManager.Instance.UpdateExp(GameManager.Instance.killExp);
+        Destroy(this.gameObject);
     }
 
     #region Shoot
@@ -126,12 +131,14 @@ public class Enemy : MonoBehaviour
             damage = Random.Range(1, 5);
             hp -= damage;
 
+            hpSlider.value = (float)hp / (float)maxHp;
+
             Destroy(collision.gameObject);
 
             Debug.Log($"Enemy Attack. current Hp : {hp}");
             Debug.Log($"score +={damage}");
 
-            GameManager.Instance.GetScore(hp, damage);
+            GameManager.Instance.GetScore(damage);
         }
     }
 

@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     public float speed = 2f;
 
     public int maxHp = 100;
-    int hp;
+    internal int hp;
     int damage;
 
     void Awake()
@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (hp <= 0) { Debug.Log("Die"); }
+        if (hp <= 0) { GameManager.Instance.GameOver(); }
 
         Move();
 
@@ -53,6 +53,8 @@ public class Player : MonoBehaviour
         {
             damage = Random.Range(1, 3);
             hp -= damage;
+
+            GameManager.Instance.UpdateHp(hp, maxHp);
             Debug.Log($"Player Attack. now hp : {hp}");
         }
     }
