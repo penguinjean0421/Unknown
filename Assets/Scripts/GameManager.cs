@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -33,20 +32,19 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    public void GetScore(int damage)
+    internal void GetScore(int damage)
     {
         score += damage * damagePoint;
 
         uiManager.UpdateScoreText(score);
     }
 
-    public void UpdateHp(int nowHp, int maxHp)
+    internal void UpdateHp(int nowHp, int maxHp)
     {
         uiManager.UpdateHpDisPlay(nowHp, maxHp);
     }
 
-    // Level Up
-    public void UpdateExp(int amount)
+    internal void UpdateExp(int amount)
     {
         exp += amount;
 
@@ -62,11 +60,18 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (level < nextExp.Length) { uiManager.UpdateExpDisPlay(exp, nextExp[level]); }
-        else { uiManager.UpdateExpDisPlay(exp, exp > 0 ? exp : 1); }
+        if (level < nextExp.Length)
+        {
+            uiManager.UpdateExpDisPlay(exp, nextExp[level]);
+            uiManager.UpdateLevelText(level);
+        }
+        else
+        {
+            uiManager.UpdateExpDisPlay(exp, exp > 0 ? exp : 1);
+            uiManager.UpdateLevelText(level);
+        }
     }
 
-    // Game End
     internal void GameOver()
     {
         Time.timeScale = 0f;
@@ -83,6 +88,7 @@ public class GameManager : MonoBehaviour
         uiManager.UpdateHpDisPlay(player.hp, player.maxHp);
         uiManager.UpdateExpDisPlay(exp, nextExp[level]);
         uiManager.UpdateScoreText(score);
+        uiManager.UpdateLevelText(level);
 
         Time.timeScale = 1f;
     }
@@ -96,6 +102,7 @@ public class GameManager : MonoBehaviour
         uiManager.UpdateHpDisPlay(player.hp, player.maxHp);
         uiManager.UpdateExpDisPlay(exp, nextExp[level]);
         uiManager.UpdateScoreText(score);
+        uiManager.UpdateLevelText(level);
 
         Time.timeScale = 1f;
     }

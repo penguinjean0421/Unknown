@@ -437,7 +437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   maxHp: 100
-  bullet: {fileID: 6758859407153563360, guid: 1ba516d961cc34aa8b88245b1da5175d, type: 3}
+  bullet: {fileID: 6758859407153563360, guid: 4de7e9c39b9a74f098ab2e575eec9ff2, type: 3}
   bulletSpeed: 100
   fireRate: 1
 --- !u!1 &6310967443717998441

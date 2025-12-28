@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    public float deleteTime;
+
     void Start()
     {
-        Destroy(this.gameObject, 0.5f);
+        Destroy(this.gameObject, deleteTime);
     }
 }

@@ -11,9 +11,12 @@ public class UIManager : MonoBehaviour
     // Score
     internal Text scoreText;
 
-    // level
-    internal Slider levelSlider;
+    // Level
     internal Text levelText;
+
+    // Exp
+    internal Slider expSlider;
+    internal Text expText;
 
     // hp
     internal Slider hpSlider;
@@ -26,8 +29,11 @@ public class UIManager : MonoBehaviour
         gameOver = GameObject.Find("GameOver");
 
         scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
-        levelSlider = GameObject.Find("LevelSlider").GetComponent<Slider>();
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
+
+        expSlider = GameObject.Find("ExpSlider").GetComponent<Slider>();
+        expText = GameObject.Find("ExpText").GetComponent<Text>();
+
         hpSlider = GameObject.Find("HpSlider").GetComponent<Slider>();
         hpText = GameObject.Find("HpText").GetComponent<Text>();
     }
@@ -54,19 +60,25 @@ public class UIManager : MonoBehaviour
     {
         if (GameManager.Instance.level >= GameManager.Instance.nextExp.Length)
         {
-            levelSlider.value = 1f;
-            levelText.text = "MAX";
+            expSlider.value = 1f;
+            expText.text = "MAX";
         }
         else
         {
-            levelSlider.value = (float)nowExp / maxExp;
-            levelText.text = $"{levelSlider.value * 100}%";
+            expSlider.value = (float)nowExp / maxExp;
+            expText.text = $"{expSlider.value * 100}%";
         }
     }
 
     internal void UpdateScoreText(int score)
     {
         scoreText.text = $"Score : {score}";
+    }
+
+    internal void UpdateLevelText(int level)
+    {
+        if (GameManager.Instance.level >= GameManager.Instance.nextExp.Length) { levelText.text = $"Level : Max"; }
+        else { levelText.text = $"Level : {level + 1}"; }
     }
     #endregion
 
@@ -75,7 +87,6 @@ public class UIManager : MonoBehaviour
     {
         title.SetActive(false);
         inGame.SetActive(true);
-
         GameManager.Instance.GameStart();
     }
 
@@ -83,7 +94,7 @@ public class UIManager : MonoBehaviour
     {
         gameOver.SetActive(false);
         inGame.SetActive(true);
-
+        GameManager.Instance.GameStart();
     }
 
     public void OnClckGameQuit()

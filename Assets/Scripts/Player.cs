@@ -3,18 +3,17 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    Rigidbody rigid;
     Weapon weapon;
 
+    // Move Speed
     public float speed = 2f;
 
+    // Hp
     public int maxHp = 100;
     internal int hp;
-    int damage;
 
     void Awake()
     {
-        rigid = GetComponent<Rigidbody>();
         weapon = GameObject.Find("Weapon").GetComponent<Weapon>();
     }
 
@@ -29,7 +28,7 @@ public class Player : MonoBehaviour
 
         Move();
 
-        if (Keyboard.current.spaceKey.isPressed) { weapon.isShooting = true; }
+        weapon.isShooting = Keyboard.current.spaceKey.isPressed;
     }
 
     void Move()
@@ -39,7 +38,6 @@ public class Player : MonoBehaviour
 
         if (Keyboard.current.wKey.isPressed) hInput += 1f;
         if (Keyboard.current.sKey.isPressed) hInput -= 1f;
-
         if (Keyboard.current.aKey.isPressed) vInput -= 1f;
         if (Keyboard.current.dKey.isPressed) vInput += 1f;
 
@@ -49,13 +47,18 @@ public class Player : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name == "Bullet(Clone)")
+        if (collision.gameObject.tag == "EnemyBullet")
         {
-            damage = Random.Range(1, 3);
+            int damage = Random.Range(1, 3);
             hp -= damage;
 
             GameManager.Instance.UpdateHp(hp, maxHp);
             Debug.Log($"Player Attack. now hp : {hp}");
+        }
+
+        if (collision.gameObject.tag == "DeadZone")
+        {
+            GameManager.Instance.GameOver();
         }
     }
 }

@@ -6,41 +6,29 @@ using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
-    Rigidbody rigid;
-
+    // UI
     Slider hpSlider;
     Text nameText;
 
-    float speed = 1f;
-
     // NevMesh
     Transform player;
-    Transform patrolRoute;
-    List<Transform> locations;
     NavMeshAgent agent;
-    int locationIndex = 0;
-
-    [Header("HP")]
+    // Hp
     public int maxHp;
     int hp;
-    int damage;
 
-    [Header("Bullet")]
+    // Bullet
     public GameObject bullet;
     public float bulletSpeed = 100f;
     public float fireRate = 1f;
 
     void Awake()
     {
-        rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         hpSlider = GetComponentInChildren<Slider>();
         nameText = GetComponentInChildren<Text>();
 
         player = GameObject.Find("Player").transform;
-        patrolRoute = GameObject.Find("PatrolRoute").transform;
-
-        locations = new List<Transform>();
     }
 
     void Start()
@@ -51,7 +39,6 @@ public class Enemy : MonoBehaviour
 
         Debug.Log($"Enemy Hp : {hp}");
 
-        InitializePatroalRoute();
         MoveToNextPatrolLocation();
         StartCoroutine(Shoot());
     }
@@ -65,20 +52,6 @@ public class Enemy : MonoBehaviour
         }
 
         if (agent.remainingDistance < 0.2f && !agent.pathPending) { MoveToNextPatrolLocation(); }
-
-        // Move();
-    }
-
-    void Move()
-    {
-        float vInput = 0;
-        vInput += speed;
-
-        Vector3 movement = new Vector3(vInput, 0f, 0f).normalized;
-        transform.position += movement * Time.deltaTime;
-
-        if (transform.position.x >= 5) { speed *= -1; }
-        if (transform.position.x <= -5) { speed *= -1; }
     }
 
     void Die()
@@ -106,29 +79,19 @@ public class Enemy : MonoBehaviour
     #endregion
 
     #region Navmesh
-    void InitializePatroalRoute()
-    {
-        foreach (Transform child in patrolRoute)
-        {
-            locations.Add(child);
-        }
-    }
-
     void MoveToNextPatrolLocation()
     {
-        if (locations.Count == 0) { return; }
-
-        agent.destination = locations[locationIndex].position;
-
-        locationIndex = (locationIndex + 1) % locations.Count;
+        float xPos = Random.Range(-50, 50);
+        float zPos = Random.Range(-50, 50);
+        agent.destination = new Vector3(xPos, transform.position.y, zPos);
     }
     #endregion
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name == "Bullet(Clone)")
+        if (collision.gameObject.tag == "Bullet")
         {
-            damage = Random.Range(1, 5);
+            int damage = Random.Range(1, 5);
             hp -= damage;
 
             hpSlider.value = (float)hp / (float)maxHp;
@@ -136,8 +99,6 @@ public class Enemy : MonoBehaviour
             Destroy(collision.gameObject);
 
             Debug.Log($"Enemy Attack. current Hp : {hp}");
-            Debug.Log($"score +={damage}");
-
             GameManager.Instance.GetScore(damage);
         }
     }
